@@ -1,12 +1,12 @@
-const asyncHander = (reqHander) => {
-    (req, res, next) => {
-        Promise.resolve(reqHander(req, res, next))
-        .catch((err) => next(err));
-    }
-}
-
-export {asyncHander};
-
+const asyncHandler = (reqHandler) => {
+    return (req, res, next) => {
+         Promise.resolve(reqHandler(req, res, next))
+         .catch((err) => next(err));
+     }
+ }
+ 
+ export { asyncHandler };
+ 
 // const asyncHanderSecond = (fn) => async(req, res, next) => {
 // try {
 //     await fn(req, res, next)

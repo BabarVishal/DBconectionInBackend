@@ -15,9 +15,10 @@ app.use(cookieParser());  // Ensure this matches the import
 
 // Routes Import
 import { userRouter } from "./routes/user.routes.js";
-
 // Router declaration
 app.use("/api/v1/user", userRouter);
+
+
 
 export { app };
 

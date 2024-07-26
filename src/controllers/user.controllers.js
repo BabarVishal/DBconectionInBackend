@@ -134,6 +134,41 @@ return res
 
 })
 
+const refreshAccessToken = asyncHandler (async(req, res) => {
+ const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+ if(incomingRefreshToken){
+  throw new ApiError(400, "unauthorized request")
+ }
+
+ const decodedToken = jwt.verify(
+  incomingRefreshToken,
+  process.env.REFRESH_TOKEN_SECRET
+ )
+
+ const user = await User.findById(decodedToken?._id)
+
+ if(incomingRefreshToken){
+  throw new ApiError(400, "invalid refresh Token!")
+ }
+
+ const option = {
+  httpOnly: true,
+  secure: true
+ }
+
+ const {AccessToken, refreshToken} = await generateAccessTokenandgenerateRefreshToken(user._id)
+
+ return res
+ .status(200)
+ .cookie("accessToken", AccessToken, option)
+ .cookie("refreshToken", refreshToken, option)
+ .json(
+  new ApiError(200, {AccessToken, refreshToken},"Access token Refreshed")
+ )
+
+})
+
 export {
   registerUser,
   loginUser,

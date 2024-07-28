@@ -190,10 +190,46 @@ const changeCurrentUser = asyncHandler( async(req, res)=>{
     }
 })
 
+const getuserChannelProfile = asyncHandler(async(req, res)=>{
+  const {fullName} = req.params
+
+  if(!fullName?.trim()){
+    throw new ApiError(400, "Fullname is Missing!");
+  }
+
+  const channel = await User.aggregate([
+    {
+ $match:{
+  username: fullName?.toLowerCase()
+ }
+    },
+
+    {
+      $lookup:{
+        from : "subcriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers"
+      }
+    },
+
+    {
+      $lookup:{
+        from : "subcriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribers"
+      }
+    }
+  ])
+
+}) 
+
 export {
   registerUser,
   loginUser,
   logOut,
   refreshAccessToken,
-  changeCurrentUser
+  changeCurrentUser,
+  getuserChannelProfile
 }
